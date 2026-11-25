@@ -15,12 +15,14 @@ export const CONFIG = {
   waitDuration: 15.0,          // 等待秒數
 
   // 外觀
-  placeholderColor: 0xffffff,
+  placeholderColor: 0xffffff,  // 邊框層顏色（C2、C3 皆白色）
+  // 填充層顏色：C2、C3 都用所選風格的 fallbackColors（見下方），
+  // 兩條件顏色相同，差異只剩「變不變」。
   borderOpacity: 0.7,          // 邊框層，三條件皆固定
-  c2Opacity: 0.4,              // C2 填充層，固定
-  c3OpacityStart: 0.1,         // C3 填充層起點
-  c3OpacityEnd: 0.5,           // C3 填充層終點
-  c3Easing: (t) => 1 - Math.pow(1 - t, 3),
+  c2Opacity: 0.475,            // C2 填充層，固定（= C3 時間平均值）
+  c3OpacityStart: 0.05,        // C3 填充層起點
+  c3OpacityEnd: 0.9,           // C3 填充層終點
+  c3Easing: (t) => t * t * (3 - 2 * t), // ease-in-out（smoothstep），積分 = 0.5
 
   // 風格選單
   styles: ['wood', 'brick', 'fabric', 'concrete'],

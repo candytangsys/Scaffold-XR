@@ -11,9 +11,10 @@ import {CONFIG} from './config.js';
 export class WaitFeedback extends xb.Script {
   // position/quaternion：面板要放的位置與朝向（PlacementController 算好的）。
   // condition：'C1' / 'C2' / 'C3'。
+  // style：所選風格，C2/C3 填充層用它的 fallbackColors。
   // duration：等待秒數。
   // onDone：計時結束時呼叫。
-  start({position, quaternion, condition, duration, onDone}) {
+  start({position, quaternion, condition, style, duration, onDone}) {
     this.clearMeshes(); // 保險：如果上一輪還沒清乾淨就又開始，先清掉
 
     this.condition = condition;
@@ -45,7 +46,8 @@ export class WaitFeedback extends xb.Script {
     this.borderMesh.quaternion.copy(quaternion);
     this.add(this.borderMesh);
 
-    // 填充層（前）：C2 固定 0.4，C3 從 0.1 開始（update() 裡逐幀往上加）。
+    // 填充層（前）：顏色為所選風格色（C2、C3 相同）。
+    // C2 固定 c2Opacity，C3 從 c3OpacityStart 開始（update() 裡逐幀往上加）。
     const fillGeometry = new THREE.PlaneGeometry(
       CONFIG.panelSize,
       CONFIG.panelSize
@@ -53,7 +55,7 @@ export class WaitFeedback extends xb.Script {
     const startOpacity =
       condition === 'C2' ? CONFIG.c2Opacity : CONFIG.c3OpacityStart;
     const fillMaterial = new THREE.MeshBasicMaterial({
-      color: CONFIG.placeholderColor,
+      color: CONFIG.fallbackColors[style] ?? CONFIG.placeholderColor,
       transparent: true,
       opacity: startOpacity,
       depthWrite: false,

@@ -67,6 +67,7 @@ class MainScript extends xb.Script {
       position,
       quaternion,
       condition,
+      style,
       duration: CONFIG.waitDuration,
       onDone: () => this.finishWaiting({position, quaternion, style}),
     });
